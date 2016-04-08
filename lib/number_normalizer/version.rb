@@ -1,3 +1,3 @@
-module NumberNormalizer
+class NumberNormalizer
   VERSION = "0.1.0"
 end
