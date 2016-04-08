@@ -28,10 +28,16 @@ describe NumberNormalizer do
   end
 
   describe '#getNumbersInDigits' do
-    it 'returns all digit number in array when feeding digits number' do
+    it 'returns digit numbers in array when feeding digits number' do
       t = "I am counting 1, 2, 3, 4 and 100.494 until 10049938. A float number is 1223.232."
       n = NumberNormalizer.new t
       n.getNumbersInDigits.should eql [1, 2, 3, 4, 100.494, 10049938, 1223.232]
+    end
+
+    it 'returns digit numbers in array when feeding with integer numbers within 100 in words' do
+      t = "I am counting five, ten, twenty-five, eighteen, one"
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [5, 10, 25, 18, 1]
     end
   end
 
