@@ -29,9 +29,36 @@ describe NumberNormalizer do
 
   describe '#getNumbersInDigits' do
     it 'returns digit numbers in array when feeding digits number' do
-      t = "I am counting 1, 2, 3, 4 and 100.494 until 10049938. A float number is 1223.232."
+      t = "I am counting 1, 2, 3, 4 and 100.494 until 10049938. " \
+          "A float number is 1223.232. A float number .1923. 1.abc.\n" \
+          " 123.1123.\n" \
+          ".123313, jdfdjf 1,adf .2.abc"
       n = NumberNormalizer.new t
-      n.getNumbersInDigits.should eql [1, 2, 3, 4, 100.494, 10049938, 1223.232]
+      n.getNumbersInDigits.should eql [1, 2, 3, 4, 100.494, 10049938, 1223.232, 0.1923, 123.1123, 0.123313]
+    end
+
+    it 'returns digit numbers in array when feeding space seperated integer number like 10 123 456' do
+      t = "The area is 10 123 456 square meters. The population is 1 300 000 000."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [10123456, 1300000000]
+    end
+
+    it 'returns digit numbers in array when feeding space seperated float number like 10 123.123 32' do
+      t = "The area is 1 120 123.12 square meters. The number is is 10 123.123 32."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [1120123.12, 10123.12332]
+    end
+
+    it 'returns digit numbers in array when feeding comma seperated integer number like 10,123,456' do
+      t = "The area is 10,123,456 square meters. The population is 1,300,000,000."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [10123456, 1300000000]
+    end
+
+    it 'returns digit numbers in array when feeding comma seperated float number like 10,123.123,32' do
+      t = "The area is 1,120,123.12 square meters. The number is is 10,123.123,32."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [1120123.12, 10123.12332]
     end
 
     it 'returns digit numbers in array when feeding with integer numbers within 100 in words' do
@@ -41,7 +68,8 @@ describe NumberNormalizer do
     end
   end
 
-  # 100.11, one hundred, 1 million, 10^3, 0x30,
-
+  # pure number 100.11, one hundred, 1 million, 10^3, 0x30,
+  # telephone numbers eg. +46464602121, 008613907015555, 0748756924
+  # currency eg. $1000, one hundred dollar
 
 end
