@@ -18,32 +18,29 @@ class NumberNormalizer
     @p_comma_sperated_digits = '\d{,3}(,\d{3}){1,}(\.\d{1,3}){,1}(,\d{3})*(,\d{,3})?'
     @p_begin = ''
     @p_end = '\W?(\s|$)'
+    @matches = {}
+
+    find_all_digits
   end
 
   def text
     @text
   end
 
-  # 0-9 . , \s
-  def getNumbersInDigits
-    # regex on whole string or each token
-    # will miss #1, number1 --> need manual exclusion
-    digits_pattern = '(' + @p_space_sperated_digits + '|' \
-                         + @p_comma_sperated_digits + '|' \
-                         + @p_floating_digits + '|' \
-                         + @p_floating_digits_2 + '|' \
-                         + @p_digits_only + ')' \
-                         + @p_end
 
-    digits = @text.scan(Regexp.new(digits_pattern)).map do |m|
-        s = m[0].gsub(/[\s,]/, '')
-        if s =~ /\./
-          s.to_f
-        else
-          s.to_i
-        end
+  def getNumbersInDigits
+
+    digits = Set.new
+
+    @matches.each_key do |key|
+      s = key.gsub(/[\s,]/, '')
+      if s =~ /\./
+        digits.add(s.to_f)
+      else
+        digits.add(s.to_i)
       end
-    return digits
+    end
+    return digits.to_a
   end
 
 protected
@@ -52,7 +49,26 @@ protected
     @text_array = @text.split(@token)
   end
 
-  def remove_not_number_text
+  def find_all_digits
+    digits_pattern_str = '(' + @p_space_sperated_digits + '|' \
+                         + @p_comma_sperated_digits + '|' \
+                         + @p_floating_digits + '|' \
+                         + @p_floating_digits_2 + '|' \
+                         + @p_digits_only + ')' \
+                         + @p_end
+
+    digits_pattern = Regexp.new(digits_pattern_str)
+
+    @text.enum_for(:scan, digits_pattern).each do |m|
+      mstr = m[0]
+      position = Regexp.last_match.begin(0)
+      if @matches.has_key?mstr
+        @matches[mstr][:pos].push(position)
+      else
+        @matches[mstr] = {:pos => [position],
+                          :type => :digits }
+      end
+    end
   end
 
 end

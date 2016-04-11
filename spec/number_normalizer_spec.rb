@@ -61,6 +61,19 @@ describe NumberNormalizer do
       n.getNumbersInDigits.should eql [1120123.12, 10123.12332]
     end
 
+    it 'returns non-duplicated digit numbers in array when feeding with duplicated numbers' do
+      t = "You have 100 dollar. I have 50. He has 100 too."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [100, 50]
+    end
+
+    # TODO should or should not ?? -- maybe configuration
+    it 'returns digit numbers in strings like "number1", "#10", "$1 100.50"' do
+      t = "He is number 1. His address is road #10. She has $1 100.50."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [1, 10, 1100.5]
+    end
+
     it 'returns digit numbers in array when feeding with integer numbers within 100 in words' do
       t = "I am counting five, ten, twenty-five, eighteen, one"
       n = NumberNormalizer.new t
