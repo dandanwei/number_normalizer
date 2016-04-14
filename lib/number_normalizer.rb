@@ -30,16 +30,15 @@ class NumberNormalizer
 
   def getNumbersInDigits
 
+    convert_digit_string_to_numbers
     digits = Set.new
 
-    @matches.each_key do |key|
-      s = key.gsub(/[\s,]/, '')
-      if s =~ /\./
-        digits.add(s.to_f)
-      else
-        digits.add(s.to_i)
+    @matches.each_value do |v|
+      if v.has_key?:digit_form
+        digits.add(v[:digit_form])
       end
     end
+
     return digits.to_a
   end
 
@@ -66,7 +65,16 @@ protected
         @matches[mstr][:pos].push(position)
       else
         @matches[mstr] = {:pos => [position],
-                          :type => :digits }
+                          :type => :digits}
+      end
+    end
+  end
+
+  def convert_digit_string_to_numbers
+    @matches.each_pair do |key, value|
+      if value[:type] == :digits
+        s = key.gsub(/[\s,]/, '')
+        value[:digit_form] = if s =~ /\./ then s.to_f else s.to_i end
       end
     end
   end
