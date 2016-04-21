@@ -37,6 +37,18 @@ describe NumberNormalizer do
       n.getNumbersInDigits.should eql [1, 2, 3, 4, 100.494, 10049938, 1223.232, 0.1923, 123.1123, 0.123313]
     end
 
+    it 'returns digit numbers in array when feeding integer digits numbers like 1, 2, 3, 101, 12349097320232' do
+      t = "I am counting 1, 2, 3 and 101 until 12349097320232. "
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [1, 2, 3, 101, 12349097320232]
+    end
+
+    it 'returns digit numbers in array when feeding floating digits numbers like 1223.232, 100.494, .1923' do
+      t = "A floating numbers is like 1223.232 and 100.494. .1923 is also a floating number."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [1223.232, 100.494, 0.1923]
+    end
+
     it 'returns digit numbers in array when feeding space seperated integer number like 10 123 456' do
       t = "The area is 10 123 456 square meters. The population is 1 300 000 000."
       n = NumberNormalizer.new t
