@@ -1,4 +1,5 @@
 require "number_normalizer/version"
+require "set"
 
 class NumberNormalizer
 
