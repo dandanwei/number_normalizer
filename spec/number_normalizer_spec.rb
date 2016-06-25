@@ -86,6 +86,12 @@ describe NumberNormalizer do
       n.getNumbersInDigits.should eql [1, 10, 1100.5]
     end
 
+    it 'returns digit numbers in array when feeding with integer numbers from 0 to 10 in words' do
+      t = "I am counting one, two, three, four, five, six, seven, eight, nine, ten."
+      n = NumberNormalizer.new t
+      n.getNumbersInDigits.should eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    end
+
     it 'returns digit numbers in array when feeding with integer numbers within 100 in words' do
       t = "I am counting five, ten, twenty-five, eighteen, one"
       n = NumberNormalizer.new t
