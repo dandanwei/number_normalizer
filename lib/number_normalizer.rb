@@ -3,6 +3,53 @@ require "set"
 
 class NumberNormalizer
 
+  attr_reader :text
+  attr_reader :matches
+
+  NUM_WORD = {
+    'zero'       =>  0 ,
+    'one'        =>  1 ,
+    'two'        =>  2 ,
+    'three'      =>  3 ,
+    'four'       =>  4 ,
+    'five'       =>  5 ,
+    'six'        =>  6 ,
+    'seven'      =>  7 ,
+    'eight'      =>  8 ,
+    'nine'       =>  9 ,
+    'ten'        =>  10,
+    'eleven'     =>  11,
+    'twelve'     =>  12,
+    'thirteen'   =>  13,
+    'fourteen'   =>  14,
+    'fifteen'    =>  15,
+    'sixteen'    =>  16,
+    'seventeen'  =>  17,
+    'eighteen'   =>  18,
+    'nineteen'   =>  19,
+    'twenty'     =>  20,
+    'thirty'     =>  30,
+    'forty'      =>  40,
+    'fifty'      =>  50,
+    'sixty'      =>  60,
+    'seventy'    =>  70,
+    'eighty'     =>  80,
+    'ninety'     =>  90,
+  }
+
+  MULT_WORD = {
+    'hundred'    => 100,
+    'thousand'   => 1000,
+    'million'    => 1000000,
+    'billion'    => 1000000000,
+    'trillion'   => 1000000000000,
+  }
+
+  ADJ_WORD = {
+    '-'          => 0,
+    'and'        => 0,
+  }
+
   def initialize text
     @text =  text
     @token = ' '
@@ -22,12 +69,9 @@ class NumberNormalizer
     @matches = {}
 
     find_all_digits
-  end
 
-  def text
-    @text
+    find_all_words
   end
-
 
   def digit_numbers
 
@@ -71,6 +115,51 @@ protected
     end
   end
 
+  def find_all_words
+    text_arr = preprocess(@text)
+
+    num_word = ''
+    num_digit = 0
+    flag = false
+    text_arr.each do |str|
+      num = NUM_WORD[str]
+      mult = MULT_WORD[str]
+      adj = ADJ_WORD[str]
+      if num == nil
+        if flag == true
+          if mult == nil && adj == nil
+            flag = false
+            # save the number
+            @matches[num_word] = {:pos => [1],
+                                  :type => :words,
+                                  :digit_form => num_digit}
+          elsif adj != nil
+            num_word += str
+          elsif mult != nil # mult
+            num_digit *= mult
+            num_word = num_word + ' ' + str
+          end
+        end
+      else
+        # init the number
+        if flag == false
+          num_word = ''
+          num_digit = 0
+        end
+        num_digit += num
+        num_word = num_word + ' ' + str
+        flag = true
+      end
+    end
+
+    if flag == true
+      # save the number
+      @matches[num_word] = {:pos => [1],
+                            :type => :words,
+                            :digit_form => num_digit}
+    end
+  end
+
   def convert_digit_string_to_numbers
     @matches.each_pair do |key, value|
       if value[:type] == :digits
@@ -78,6 +167,10 @@ protected
         value[:digit_form] = if s =~ /\./ then s.to_f else s.to_i end
       end
     end
+  end
+
+  def preprocess(str)
+    str.downcase.gsub(/([^a-zA-Z0-9\s])/, ' \1 ').split()
   end
 
 end

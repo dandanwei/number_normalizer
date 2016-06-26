@@ -87,16 +87,35 @@ describe NumberNormalizer do
     end
 
     it 'returns digit numbers in array when feeding with integer numbers from 0 to 10 in words' do
-      t = "I am counting one, two, three, four, five, six, seven, eight, nine, ten."
+      t = "I am counting zero, one, two, three, four, five, six, seven, eight, nine, ten."
       n = NumberNormalizer.new t
-      expect( n.digit_numbers ).to eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      expect( n.digit_numbers ).to eql [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     end
 
-    it 'returns digit numbers in array when feeding with integer numbers within 100 in words' do
-      t = "I am counting five, ten, twenty-five, eighteen, one"
+    it 'returns digit numbers in array when feeding with integer numbers from 11 to 19 in words' do
+      t = "I am counting eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen."
       n = NumberNormalizer.new t
-      expect( n.digit_numbers ).to eql [5, 10, 25, 18, 1]
+      expect( n.digit_numbers ).to eql [11, 12, 13, 14, 15, 16, 17, 18, 19]
     end
+
+    it 'returns digit numbers in array when feeding with integer numbers between 20 to 99 in words' do
+      t = "I am counting twenty, twenty-one, thirty, thirty-two, forty, forty-three, fifty, fifty-four, sixty, sixty-five, seventy, seventy-six, eighty, eighty-seven, ninety, ninety-eight, ninety-nine."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [20, 21, 30, 32, 40, 43, 50, 54, 60, 65, 70, 76, 80, 87, 90, 98, 99]
+    end
+
+    it 'returns digit numbers in array when feeding with integer numbers larger than 100 in words' do
+      t = "I am counting one hundred, five hundred, twenty thousand, ninety-six million three thousand."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [100, 500, 20000, 96003000]
+    end
+
+    it 'returns digit numbers in array when feeding with words like a hundred, a thousand, a million' do
+      t = "There are a hundred cars, a thousand bicycles and a million people."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [100, 1000, 1000000]
+    end
+
   end
 
   # pure number 100.11, one hundred, 1 million, 10^3, 0x30,
