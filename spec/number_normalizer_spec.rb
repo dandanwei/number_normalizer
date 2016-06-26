@@ -27,75 +27,75 @@ describe NumberNormalizer do
     end
   end
 
-  describe '#getNumbersInDigits' do
+  describe '#digit_numbers' do
     it 'returns digit numbers in array when feeding digits number' do
       t = "I am counting 1, 2, 3, 4 and 100.494 until 10049938. " \
           "A float number is 1223.232. A float number .1923. 1.abc.\n" \
           " 123.1123.\n" \
           ".123313, jdfdjf 1,adf .2.abc"
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1, 2, 3, 4, 100.494, 10049938, 1223.232, 0.1923, 123.1123, 0.123313]
+      expect( n.digit_numbers ).to eql [1, 2, 3, 4, 100.494, 10049938, 1223.232, 0.1923, 123.1123, 0.123313]
     end
 
     it 'returns digit numbers in array when feeding integer digits numbers like 1, 2, 3, 101, 12349097320232' do
       t = "I am counting 1, 2, 3 and 101 until 12349097320232. "
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1, 2, 3, 101, 12349097320232]
+      expect( n.digit_numbers ).to eql [1, 2, 3, 101, 12349097320232]
     end
 
     it 'returns digit numbers in array when feeding floating digits numbers like 1223.232, 100.494, .1923' do
       t = "A floating numbers is like 1223.232 and 100.494. .1923 is also a floating number."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1223.232, 100.494, 0.1923]
+      expect( n.digit_numbers ).to eql [1223.232, 100.494, 0.1923]
     end
 
     it 'returns digit numbers in array when feeding space seperated integer number like 10 123 456' do
       t = "The area is 10 123 456 square meters. The population is 1 300 000 000."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [10123456, 1300000000]
+      expect( n.digit_numbers ).to eql [10123456, 1300000000]
     end
 
     it 'returns digit numbers in array when feeding space seperated float number like 10 123.123 32' do
       t = "The area is 1 120 123.12 square meters. The number is is 10 123.123 32."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1120123.12, 10123.12332]
+      expect( n.digit_numbers ).to eql [1120123.12, 10123.12332]
     end
 
     it 'returns digit numbers in array when feeding comma seperated integer number like 10,123,456' do
       t = "The area is 10,123,456 square meters. The population is 1,300,000,000."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [10123456, 1300000000]
+      expect( n.digit_numbers ).to eql [10123456, 1300000000]
     end
 
     it 'returns digit numbers in array when feeding comma seperated float number like 10,123.123,32' do
       t = "The area is 1,120,123.12 square meters. The number is is 10,123.123,32."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1120123.12, 10123.12332]
+      expect( n.digit_numbers ).to eql [1120123.12, 10123.12332]
     end
 
     it 'returns non-duplicated digit numbers in array when feeding with duplicated numbers' do
       t = "You have 100 dollar. I have 50. He has 100 too."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [100, 50]
+      expect( n.digit_numbers ).to eql [100, 50]
     end
 
     # TODO should or should not ?? -- maybe configuration
     it 'returns digit numbers in strings like "number1", "#10", "$1 100.50"' do
       t = "He is number 1. His address is road #10. She has $1 100.50."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1, 10, 1100.5]
+      expect( n.digit_numbers ).to eql [1, 10, 1100.5]
     end
 
     it 'returns digit numbers in array when feeding with integer numbers from 0 to 10 in words' do
       t = "I am counting one, two, three, four, five, six, seven, eight, nine, ten."
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      expect( n.digit_numbers ).to eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     end
 
     it 'returns digit numbers in array when feeding with integer numbers within 100 in words' do
       t = "I am counting five, ten, twenty-five, eighteen, one"
       n = NumberNormalizer.new t
-      expect( n.getNumbersInDigits ).to eql [5, 10, 25, 18, 1]
+      expect( n.digit_numbers ).to eql [5, 10, 25, 18, 1]
     end
   end
 

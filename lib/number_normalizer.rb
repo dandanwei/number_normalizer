@@ -29,7 +29,7 @@ class NumberNormalizer
   end
 
 
-  def getNumbersInDigits
+  def digit_numbers
 
     convert_digit_string_to_numbers
     digits = Set.new
