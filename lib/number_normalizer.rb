@@ -35,6 +35,8 @@ class NumberNormalizer
     'seventy'    =>  70,
     'eighty'     =>  80,
     'ninety'     =>  90,
+    'a'          =>  1,
+    'an'         =>  1,
   }
 
   MULT_WORD = {
@@ -121,42 +123,52 @@ protected
     num_word = ''
     num_digit = 0
     flag = false
+    final = 0
+    num_txt = 0
+    
     text_arr.each do |str|
       num = NUM_WORD[str]
       mult = MULT_WORD[str]
       adj = ADJ_WORD[str]
-      if num == nil
-        if flag == true
-          if mult == nil && adj == nil
-            flag = false
-            # save the number
-            @matches[num_word] = {:pos => [1],
-                                  :type => :words,
-                                  :digit_form => num_digit}
-          elsif adj != nil
-            num_word += str
-          elsif mult != nil # mult
-            num_digit *= mult
-            num_word = num_word + ' ' + str
-          end
+      
+      if num != nil || adj != nil
+        if num != nil
+          num_word = num_word + ' ' + str
+          num_txt += num
+          flag = true if flag == false
+        else
+          num_word += str
         end
-      else
-        # init the number
-        if flag == false
-          num_word = ''
-          num_digit = 0
+      elsif mult != nil
+        local_num = 1
+        if num_txt != 0
+          local_num = num_txt * mult
+          num_txt = 0
         end
-        num_digit += num
+        final += local_num
         num_word = num_word + ' ' + str
-        flag = true
+      else
+        #save the number
+        if flag == true
+          final += num_txt
+          # save the number
+          @matches[num_word] = {:pos => [1],
+                                :type => :words,
+                                :digit_form => final}
+          num_txt = 0
+          num_word = ''
+          flag = false
+          final = 0
+        end
       end
     end
-
+    
     if flag == true
+      final += num_txt
       # save the number
       @matches[num_word] = {:pos => [1],
                             :type => :words,
-                            :digit_form => num_digit}
+                            :digit_form => final}
     end
   end
 

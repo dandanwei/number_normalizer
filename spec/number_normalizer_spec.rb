@@ -46,7 +46,7 @@ describe NumberNormalizer do
     it 'returns digit numbers in array when feeding floating digits numbers like 1223.232, 100.494, .1923' do
       t = "A floating numbers is like 1223.232 and 100.494. .1923 is also a floating number."
       n = NumberNormalizer.new t
-      expect( n.digit_numbers ).to eql [1223.232, 100.494, 0.1923]
+      expect( n.digit_numbers ).to eql [1223.232, 100.494, 0.1923, 1]
     end
 
     it 'returns digit numbers in array when feeding space seperated integer number like 10 123 456' do
