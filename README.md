@@ -1,8 +1,18 @@
 # NumberNormalizer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/number_normalizer`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem can help you to extract and normalize numbers from a piece of free text.
 
-TODO: Delete this and the text above, and describe your gem
+__Extraction__
+⋅⋅⋅numbers expressed as digits in forms of eg.
+⋅⋅⋅⋅⋅*1000000
+⋅⋅⋅⋅⋅*1 000 000
+⋅⋅⋅⋅⋅*1 120 123.12
+⋅⋅⋅numbers expressed as plain words, eg.
+⋅⋅⋅⋅⋅*"two hundred and four million one hundred ninety-five thousand" -> 204195000
+⋅⋅⋅⋅⋅*__Note__: currently it supports English only.
+
+__Normalization__
+⋅⋅⋅Currently it will normalize to digit (Integer or Float) number.
 
 ## Installation
 
@@ -22,7 +32,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+      t = "The area is 10 123 456 square meters. The population is 1 300 000 000."
+      n = NumberNormalizer.new t
+      puts n.digit_numbers  # [10123456, 1300000000]
+```
+
+```ruby
+      t = "There are two hundred million five thousand people."
+      n = NumberNormalizer.new t
+      puts n.digit_numbers  # [200005000]
+```
 
 ## Development
 
