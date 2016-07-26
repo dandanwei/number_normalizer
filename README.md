@@ -3,16 +3,16 @@
 This gem can help you to extract and normalize numbers from a piece of free text.
 
 __Extraction__
-⋅⋅⋅numbers expressed as digits in forms of eg.
-⋅⋅⋅⋅⋅*1000000
-⋅⋅⋅⋅⋅*1 000 000
-⋅⋅⋅⋅⋅*1 120 123.12
-⋅⋅⋅numbers expressed as plain words, eg.
-⋅⋅⋅⋅⋅*"two hundred and four million one hundred ninety-five thousand" -> 204195000
-⋅⋅⋅⋅⋅*__Note__: currently it supports English only.
+...numbers expressed as digits in forms of eg.
+.....*1000000
+.....*1 000 000
+.....*1 120 123.12
+...numbers expressed as plain words, eg.
+.....*"two hundred and four million one hundred ninety-five thousand" -> 204195000
+.....*__Note__: currently it supports English only.
 
 __Normalization__
-⋅⋅⋅Currently it will normalize to digit (Integer or Float) number.
+...Currently it will normalize to digit (Integer or Float) number.
 
 ## Installation
 
@@ -33,15 +33,15 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-      t = "The area is 10 123 456 square meters. The population is 1 300 000 000."
-      n = NumberNormalizer.new t
-      puts n.digit_numbers  # [10123456, 1300000000]
+t = "The area is 10 123 456 square meters. The population is 1 300 000 000."
+n = NumberNormalizer.new t
+puts n.digit_numbers  # [10123456, 1300000000]
 ```
 
 ```ruby
-      t = "There are two hundred million five thousand people."
-      n = NumberNormalizer.new t
-      puts n.digit_numbers  # [200005000]
+t = "There are two hundred million five thousand people."
+n = NumberNormalizer.new t
+puts n.digit_numbers  # [200005000]
 ```
 
 ## Development
