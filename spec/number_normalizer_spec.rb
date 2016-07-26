@@ -116,6 +116,48 @@ describe NumberNormalizer do
       expect( n.digit_numbers ).to eql [100, 1000, 1000000]
     end
 
+    it 'returns digit numbers in array when feeding with words like two hundred million five thousand' do
+      t = "There are two hundred million five thousand people."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [200005000]
+    end
+
+    it 'returns digit numbers in array when feeding with words like two hundred and four million one hundred ninty-five thousand' do
+      t = "There are two hundred and four million one hundred ninety-five thousand people."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [204195000]
+    end
+
+    it 'returns digit numbers in array when feeding with words like one thousand and one' do
+      t = "There are one thousand and one nights."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [1001]
+    end
+
+    it 'returns 2 digit numbers in array when feeding with words like one thousand and one million.' do
+      t = "Numbers are one thousand and one million."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [1000, 1000000]
+    end
+
+    it 'returns 1 digit number in array when feeding with words like one hundred and one million' do
+      t = "The number is one hundred and one million."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [101000000]
+    end
+
+    it 'returns digit numbers in array when feeding with words like two hundred thousand and five hundred million' do
+      t = "The two numbers are two hundred thousand and five hundred million."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [2, 200000, 500000000]
+    end
+
+    it 'returns digit numbers in array when feeding with words like a half-dozen' do
+      t = "There are a half-dozen soldiers."
+      n = NumberNormalizer.new t
+      expect( n.digit_numbers ).to eql [6.0]
+    end
+
   end
 
   # pure number 100.11, one hundred, 1 million, 10^3, 0x30,

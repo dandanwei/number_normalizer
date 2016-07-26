@@ -40,6 +40,8 @@ class NumberNormalizer
   }
 
   MULT_WORD = {
+    'half'       => 0.5,
+    'dozen'      => 12,
     'hundred'    => 100,
     'thousand'   => 1000,
     'million'    => 1000000,
@@ -79,6 +81,8 @@ class NumberNormalizer
 
     convert_digit_string_to_numbers
     digits = Set.new
+
+    #puts @matches
 
     @matches.each_value do |v|
       if v.has_key?:digit_form
@@ -120,56 +124,90 @@ protected
   def find_all_words
     text_arr = preprocess(@text)
 
-    num_word = ''
-    num_digit = 0
+    num_words = ''
+    temp_words = ''
+    temp_num = 0
+    temp_mode = 0
+    hundred_num = 0
+    final_num = 0
     flag = false
-    final = 0
-    num_txt = 0
-    
+    is_prev_mult = false
+    is_prev_num = false
+
     text_arr.each do |str|
       num = NUM_WORD[str]
       mult = MULT_WORD[str]
       adj = ADJ_WORD[str]
-      
-      if num != nil || adj != nil
-        if num != nil
-          num_word = num_word + ' ' + str
-          num_txt += num
-          flag = true if flag == false
+      #puts "#{str}==#{num}==#{mult}==#{adj}=="
+
+      if num != nil
+        if temp_mode > 100
+          temp_num += num
+          temp_words = temp_words + ' ' + str
         else
-          num_word += str
+          hundred_num += num
+          num_words = num_words + ' ' + str
+          temp_mode = 0
         end
-      elsif mult != nil
-        local_num = 1
-        if num_txt != 0
-          local_num = num_txt * mult
-          num_txt = 0
+        flag = true
+        is_prev_mult = false
+        is_prev_num = true
+      elsif flag  && adj != nil && ((str == '-') || (is_prev_mult && (str == 'and')))
+        if temp_mode >= 100 && temp_mode % 10 == 0 && str == 'and'
+          temp_mode += 1
         end
-        final += local_num
-        num_word = num_word + ' ' + str
-      else
-        #save the number
-        if flag == true
-          final += num_txt
-          # save the number
-          @matches[num_word] = {:pos => [1],
-                                :type => :words,
-                                :digit_form => final}
-          num_txt = 0
-          num_word = ''
-          flag = false
-          final = 0
+        num_words = num_words + ' ' + str if str == 'and'
+        num_words += str if str == '-'
+        is_prev_mult = false
+        is_prev_num = false
+      elsif flag && mult != nil
+        if (temp_mode > 1000 && temp_mode % 10 == 1) || (temp_mode > 100 && temp_mode < 1000 && mult < 1000)
+          # 2 numbers
+          # -- save previous number first
+          final_num += hundred_num
+          save_num_words(num_words.strip, final_num)
+          # -- start counting current number
+          num_words = temp_words
+          hundred_num = temp_num
+          temp_words = ''
+          temp_num = 0
+          final_num = 0
+        else
+          # 1 number
+          hundred_num += temp_num
+          temp_num = 0
         end
+        hundred_num *= mult
+        if hundred_num >= 1000
+          final_num += hundred_num
+          hundred_num = 0
+        end
+        num_words = num_words + ' ' + str
+        is_prev_mult = true
+        is_prev_num = false
+        temp_mode = mult
+      elsif flag
+        final_num += hundred_num + temp_num
+        save_num_words(num_words.strip, final_num)
+        num_words = ''
+        final_num = 0
+        hundred_num = 0
+        temp_num = 0
+        temp_words = ''
+        temp_mode = 0
+        flag = false
+        is_prev_mult = false
+        is_prev_num = false
       end
     end
-    
-    if flag == true
-      final += num_txt
-      # save the number
-      @matches[num_word] = {:pos => [1],
-                            :type => :words,
-                            :digit_form => final}
-    end
+
+    save_num_words(num_words.strip, final_num + hundred_num) if flag
+  end
+
+  def save_num_words(num_words, number)
+    @matches[num_words] = {:pos => [1],
+                          :type => :words,
+                          :digit_form => number}
   end
 
   def convert_digit_string_to_numbers
