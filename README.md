@@ -3,16 +3,19 @@
 This gem can help you to extract and normalize numbers from a piece of free text.
 
 __Extraction__
-...numbers expressed as digits in forms of eg.
-.....*1000000
-.....*1 000 000
-.....*1 120 123.12
-...numbers expressed as plain words, eg.
-.....*"two hundred and four million one hundred ninety-five thousand" -> 204195000
-.....*__Note__: currently it supports English only.
+
+   numbers expressed as digits in forms of eg.
+     *1000000
+     *1 000 000
+     *1 120 123.12
+
+   numbers expressed as plain words, eg.
+     *"two hundred and four million one hundred ninety-five thousand" -> 204195000
+     *__Note__: currently it supports English only.
 
 __Normalization__
-...Currently it will normalize to digit (Integer or Float) number.
+
+   Currently it will normalize all numbers to digits (Integer or Float).
 
 ## Installation
 
